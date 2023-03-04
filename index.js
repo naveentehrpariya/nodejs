@@ -8,7 +8,7 @@ const User = require('./db/Users');
 
 app.get('/', (req, res)=>{
     res.send({
-        status:Active,
+        status:"Active",
         code:200
     });  
  });
