@@ -4,7 +4,9 @@ const app = express();
 require('./db/config');
 app.use(express.json());
 app.use(cors());
-const User = require('./db/Users'); 
+
+const Products = require('./db/Products');
+const { login, signup } = require('./controllers/userController');
 
 app.get('/', (req, res)=>{
     res.send({
@@ -13,15 +15,13 @@ app.get('/', (req, res)=>{
     });  
  });
 
+app.post('/signup', signup);
 
-app.get('/check', (req, res)=>{
-   res.send("STATUS - ACTIVE");  
-});
+app.post('/login', login);
 
-
-app.post('/signup', async (req, res)=>{
-    const user = new User(req.body); 
-    const result = await user.save();
+app.post('/add-products', async (req, res)=>{
+    const product = new Products(req.body); 
+    const result = await product.save();
     if(result){
         res.send({ 
             status:true,  
@@ -34,21 +34,4 @@ app.post('/signup', async (req, res)=>{
     }
 });
 
-app.post('/login', async (req, res)=>{
-    const user = await User.findOne(req.body).select("-password");
-    if(user){
-        res.send({
-            user:user,
-            status:true,
-            msg:"login Successfully"
-        }); 
-    } 
-    else { 
-        res.send({
-            status:false,
-            msg:"Invalid login details !!"
-        });
-    }
-});
-
-app.listen(5000, ()=>{console.log("===> SERVER RUNNINGGGGG")});
+app.listen(5000, ()=>{console.log("SERVER RUNNINGGGGG.....")});
