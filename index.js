@@ -4,10 +4,21 @@ const app = express();
 require('./db/config');
 app.use(express.json());
 app.use(cors());
-const User = require('./db/Users');  
+const User = require('./db/Users'); 
+
+app.get('/', (req, res)=>{
+    res.send({
+        status:Active,
+        code:200
+    });  
+ });
+
+
 app.get('/check', (req, res)=>{
    res.send("STATUS - ACTIVE");  
 });
+
+
 app.post('/signup', async (req, res)=>{
     const user = new User(req.body); 
     const result = await user.save();
