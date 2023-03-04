@@ -7,7 +7,7 @@ app.use(cors());
 const User = require('./db/Users'); 
 
 app.get('/check', (req, res)=>{
-   res.send("STATUS - ACTIVE"); 
+   res.send("STATUS - ACTIVE");  
 });
 
 app.post('/signup', async (req, res)=>{
