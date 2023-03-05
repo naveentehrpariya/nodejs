@@ -8,13 +8,13 @@ app.use(cors());
 const Products = require('./db/Products');
 const { login, signup } = require('./controllers/userController');
 
-app.get('/', (req, res)=>{
+app.get('/', (req, res)=>{ 
     res.send({
-        status:"Active",
+        status:"Active",  
         code:200
     });  
  });
-
+ 
 app.post('/signup', signup);
 
 app.post('/login', login);
