@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const Joi = require('joi');
+const Ajv = require('ajv');
+const ajv = new Ajv({ allErrors: true });
 
 const schema = new mongoose.Schema({
     name: {
@@ -8,7 +9,7 @@ const schema = new mongoose.Schema({
         minLength:3
     },
     username: {
-        type:String,
+        type:String, 
         require:true,
         minLength:3,
         maxLength:10
@@ -27,20 +28,18 @@ const schema = new mongoose.Schema({
 });
 const user = mongoose.model('users', schema);
 
+const userSchema = {  
+  type: 'object',
+  properties: {
+    name: { type: 'string', minLength: 3 },
+    username: { type: 'string', minLength: 3, maxLength: 10 },
+    email: { type: 'string', minLength: 5 },
+    password: { type: 'string', minLength: 4 },
+  },
+  required: ['name', 'username', 'email', 'password'],
+};
 
-
-function validateUser(user){ 
-    const schema = Joi.object({
-        name: Joi.string().min(3).required(),
-        username: Joi.string().min(3).required(),
-        password:Joi.string().min(4).required(8),
-        email:Joi.string().email({
-            minDomainSegments:2,
-            tlds : { allow : ['com', 'net']}
-        }),
-    });
-    return schema.validate(user);
-}
+const validateUser = ajv.compile(userSchema);
 
 module.exports.validate = validateUser;
 module.exports.User = user;

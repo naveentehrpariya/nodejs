@@ -8,3 +8,6 @@ e-com/node_modules
 db/config.js
 /config.js
 config.js
+.env
+/env
+env

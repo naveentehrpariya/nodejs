@@ -7,11 +7,19 @@ const signup = async (req, res) =>{
 
     const { name, email, username, password } = req.body
     
-    const { error } = validate(req.body, { abortEarly: true });
-    if (error) {
-        return res.status(400).json(error.details.map(d => d.message));
-    } 
-
+    const isValid = validate(req.body);
+    if (!isValid) { 
+        const errors = validate.errors.map(error => {
+          return {
+            status:false,
+            error: error
+        } ;
+        });
+        console.log(errors);
+      } else {
+        console.log('User is valid');
+      }
+  
     try { 
         // Check username exists or not
         const exists_username = await User.findOne({username:username})

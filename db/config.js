@@ -4,7 +4,7 @@ mongoose.set('strictQuery', true);
  
 // mongoose.connect( `mongodb+srv://naveentehrpariya:`+process.env.PASS+`@cluster0.rnebihn.mongodb.net/test`, {
 mongoose.connect( 'mongodb://localhost:27017/naveen', {
-    useNewUrlParser: true,  
+    useNewUrlParser: true,   
     serverSelectionTimeoutMS: 5000,
     autoIndex: false, // Don't build indexes
     maxPoolSize: 10, // Maintain up to 10 socket connections
