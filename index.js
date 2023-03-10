@@ -5,8 +5,8 @@ require('./db/config');
 app.use(express.json());
 app.use(cors());
 
-const Products = require('./db/Products');
 const { login, signup } = require('./controllers/userController');
+const { addproducts } = require(`./controllers/productsController`);
 
 app.get('/', (req, res)=>{ 
     res.send({
@@ -15,23 +15,17 @@ app.get('/', (req, res)=>{
     });  
  });
  
+
+//  SIGN UP
 app.post('/signup', signup);
 
+
+// LOGIN 
 app.post('/login', login);
 
-app.post('/add-products', async (req, res)=>{
-    const product = new Products(req.body); 
-    const result = await product.save();
-    if(result){
-        res.send({ 
-            status:true,  
-            data:result
-        });
-    } else { 
-        res.send({
-            status:false
-        });
-    }
-});
+
+// ADD PRODUCTS
+app.post('/add-products', addproducts);
+
 
 app.listen(5000, ()=>{console.log("SERVER RUNNINGGGGG.....")});

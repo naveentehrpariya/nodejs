@@ -7,6 +7,6 @@ const schema = new mongoose.Schema({
     price:Number,
     category:String,
     thumb:String 
-});
-
+});  
+ 
 module.exports = mongo.model('products', schema);

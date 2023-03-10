@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Ajv = require('ajv');
-const ajv = new Ajv({ allErrors: true });
+const ajv = new Ajv({ allErrors:true}); 
 
 const schema = new mongoose.Schema({
     name: {
@@ -24,9 +24,9 @@ const schema = new mongoose.Schema({
         require:true,
         minLength:4
     },
-
 });
 const user = mongoose.model('users', schema);
+
 
 const userSchema = {  
   type: 'object',
@@ -38,7 +38,6 @@ const userSchema = {
   },
   required: ['name', 'username', 'email', 'password'],
 };
-
 const validateUser = ajv.compile(userSchema);
 
 module.exports.validate = validateUser;
