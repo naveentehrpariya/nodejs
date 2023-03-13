@@ -2,9 +2,11 @@ const express = require('express');
 const app = express();
 
 const cors = require('cors');
-app.use(cors({
-    origin:"http://localhost:3000/",
+app.use(cors({ 
+    origin: true, 
+    credentials: true 
 }));
+
 
 require('./db/config');
 app.use(express.json());
