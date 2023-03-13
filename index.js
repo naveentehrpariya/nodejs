@@ -4,7 +4,9 @@ const app = express();
 require('./db/config');
 app.use(express.json());
 
-app.use(cors());
+app.use(cors({
+    origin:"http://localhost:3000",
+}));
 
 const { login, signup } = require('./controllers/userController');
 const { addproducts } = require(`./controllers/productsController`);
