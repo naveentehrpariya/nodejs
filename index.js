@@ -8,6 +8,20 @@ app.use(cors({
 }));
 
 
+const { createProxyMiddleware } = require('http-proxy-middleware');
+const corsPatch = createProxyMiddleware({
+    target: 'https://nodemongo.cyclic.app',
+    changeOrigin: true,
+    cookieDomainRewrite: {
+      '*': 'localhost'
+    },
+    onProxyRes: function(proxyRes, req, res) {
+      proxyRes.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000';
+      proxyRes.headers['Access-Control-Allow-Credentials'] = 'true';
+    }
+  });
+
+
 require('./db/config');
 app.use(express.json());
 
@@ -24,15 +38,15 @@ app.get('/', (req, res)=>{
  
 
 //  SIGN UP
-app.post('/signup', signup);
+app.post('/signup', signup, corsPatch);
 
 
 // LOGIN 
-app.post('/login', login);
+app.post('/login', login, corsPatch);
 
 
 // ADD PRODUCTS
-app.post('/add-products', addproducts, {withCredentials: true});
+app.post('/add-products', addproducts, corsPatch);
 
 
 app.listen(5000, ()=>{console.log("SERVER RUNNINGGGGG.....")});
