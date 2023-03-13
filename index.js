@@ -3,6 +3,7 @@ const cors = require('cors');
 const app = express();
 require('./db/config');
 app.use(express.json());
+
 app.use(cors());
 
 const { login, signup } = require('./controllers/userController');
@@ -25,7 +26,7 @@ app.post('/login', login);
 
 
 // ADD PRODUCTS
-app.post('/add-products', addproducts);
+app.post('/add-products', addproducts, {withCredentials: true});
 
 
 app.listen(5000, ()=>{console.log("SERVER RUNNINGGGGG.....")});
