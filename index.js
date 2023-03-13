@@ -1,12 +1,14 @@
 const express = require('express');
-const cors = require('cors');
 const app = express();
+
+const cors = require('cors');
+app.use(cors({
+    origin:"http://localhost:3000/",
+}));
+
 require('./db/config');
 app.use(express.json());
 
-app.use(cors({
-    origin:"http://localhost:3000",
-}));
 
 const { login, signup } = require('./controllers/userController');
 const { addproducts } = require(`./controllers/productsController`);
