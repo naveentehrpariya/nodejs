@@ -6,7 +6,7 @@ const addproducts = async (req, res)=>{
    if(result){
        res.send({ 
            status:true,   
-           data:result
+           data:req.body
        });
    } else { 
        res.send({

@@ -9,7 +9,6 @@ app.use(cors({
 
 
 const { createProxyMiddleware } = require('http-proxy-middleware');
-
 const options = {
     target: 'https://nodemongo.cyclic.app',
     changeOrigin: true,
@@ -20,8 +19,7 @@ const options = {
       proxyRes.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000';
       proxyRes.headers['Access-Control-Allow-Credentials'] = 'true';
     }
-  };
-  
+};
 const corsPatch =  createProxyMiddleware(options);
 
 require('./db/config');
