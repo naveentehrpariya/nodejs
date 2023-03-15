@@ -9,4 +9,4 @@ const schema = new mongoose.Schema({
     thumb:String 
 });  
  
-module.exports = mongo.model('products', schema);
+module.exports.Products = mongo.model('products', schema);

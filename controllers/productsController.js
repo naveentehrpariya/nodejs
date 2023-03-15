@@ -1,9 +1,10 @@
-const Products = require("../db/Products");
+const {Products} = require("../db/Products");
 
 const addproducts = async (req, res)=>{
    const product = new Products(req.body); 
    const result = await product.save();
-   if(result){
+   if(result){ 
+    console.log(req.body);
        res.send({ 
            status:true,   
            data:req.body
