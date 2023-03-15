@@ -4,9 +4,7 @@ const jwt = require('jsonwebtoken');
 const SECRET_KEY = 'naveentehrpariya';
 
 const signup = async (req, res) =>{
-
     const { name, email, username, password } = req.body
-    
     const isValid = validate(req.body);
     if (!isValid) { 
         const errors = validate.errors.map(error => {
@@ -16,10 +14,7 @@ const signup = async (req, res) =>{
         } ;
         });
         console.log(errors);
-      } else {
-        console.log('User is valid');
-      }
-  
+      }  
     try { 
         // Check username exists or not
         const exists_username = await User.findOne({username:username})
@@ -63,7 +58,6 @@ const signup = async (req, res) =>{
             msg:"Something went wrong!!"
         });
     }
-    
 };
 
 const login = async (req, res)=>{
@@ -74,8 +68,8 @@ const login = async (req, res)=>{
             return res.send({
                 status:false,
                 msg:'404, user not found !!'
-            })
-        }
+            });
+        } 
         const match_pass = await bcrypt.compare(password, exists.password);
         if(!match_pass){
             res.send({

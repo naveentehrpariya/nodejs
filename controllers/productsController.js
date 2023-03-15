@@ -1,19 +1,35 @@
-const {Products} = require("../db/Products");
+const {Products, validate} = require("../db/Products");
 
 const addproducts = async (req, res)=>{
-   const product = new Products(req.body); 
-   const result = await product.save();
-   if(result){ 
-    console.log(req.body);
-       res.send({ 
-           status:true,   
-           data:req.body
-       });
-   } else { 
-       res.send({
-           status:false
-       }); 
-   } 
+    const isValid = validate(req.body);
+    if (!isValid) { 
+        validate.errors.map(error => {
+            return {
+                status:false,
+                error: error
+            } ;
+        });
+    }  
+    try {
+        const product = new Products(req.body);
+        const result = await product.save();
+        if(result){ 
+            res.send({ 
+                status:true,   
+                data:req.body
+            });
+        } else { 
+            res.send({
+                status:false
+            }); 
+        }
+    } catch(_err){
+        res.send({ 
+            status:false,   
+            error:errors
+        });
+    }
+   
 };
 
 
