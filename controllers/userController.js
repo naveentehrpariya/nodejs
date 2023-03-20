@@ -1,12 +1,11 @@
 const { User, validate } = require('../db/Users');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const SECRET_KEY = 'naveentehrpariya';
+const SECRET_ACCESS = process.env && process.env.SECRET_ACCESS;
+const asyncHandle = require('express-async-handler');
 
 const signup = async (req, res) =>{
-
     const { name, email, username, password } = req.body
-    
     const isValid = validate(req.body);
     if (!isValid) { 
         const errors = validate.errors.map(error => {
@@ -16,16 +15,13 @@ const signup = async (req, res) =>{
         } ;
         });
         console.log(errors);
-      } else {
-        console.log('User is valid');
-      }
-  
+      }  
     try { 
         // Check username exists or not
         const exists_username = await User.findOne({username:username})
         const exists_email = await User.findOne({email:email})
         if(exists_username){
-           return res.send({
+           return res.send({ 
                 'status':418,
                 'msg':"Username already exists."
             });
@@ -48,7 +44,7 @@ const signup = async (req, res) =>{
         });
 
         // JWt Token
-        const token = jwt.sign({email:result.email, id:result._id }, SECRET_KEY);
+        const token = jwt.sign({email:result.email, id:result._id }, SECRET_ACCESS);
         res.send({
             status:true,
             user:result,
@@ -63,9 +59,8 @@ const signup = async (req, res) =>{
             msg:"Something went wrong!!"
         });
     }
-    
-};
-
+}; 
+ 
 const login = async (req, res)=>{
     const { username, password } = req.body;
     try {
@@ -74,8 +69,8 @@ const login = async (req, res)=>{
             return res.send({
                 status:false,
                 msg:'404, user not found !!'
-            })
-        }
+            });
+        } 
         const match_pass = await bcrypt.compare(password, exists.password);
         if(!match_pass){
             res.send({
@@ -83,7 +78,7 @@ const login = async (req, res)=>{
                 msg:'Invalid Credentials !!'    
             });
         }  
-        const token = jwt.sign({email:exists.email, id:exists._id }, SECRET_KEY);
+        const token = jwt.sign({email:exists.email, id:exists._id }, SECRET_ACCESS);
         res.send({
             status:true,
             user:exists,
@@ -96,4 +91,8 @@ const login = async (req, res)=>{
    
 }
 
-module.exports = { login, signup }
+const user = asyncHandle( async (req, res) => {
+    res.json(req.user); 
+});
+
+module.exports = { login, signup, user }

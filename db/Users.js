@@ -28,8 +28,8 @@ const schema = new mongoose.Schema({
 const user = mongoose.model('users', schema);
 
 
-const userSchema = {  
-  type: 'object',
+const userSchema = {   
+  type: 'object', 
   properties: {
     name: { type: 'string', minLength: 3 },
     username: { type: 'string', minLength: 3, maxLength: 10 },
