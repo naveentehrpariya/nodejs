@@ -3,6 +3,7 @@ const cors = require('cors');
 const app = express();
 require('./db/config');
 app.use(express.json());
+
 app.use(cors());
 
 const { login, signup } = require('./controllers/userController');
