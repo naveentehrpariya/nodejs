@@ -44,7 +44,7 @@ const signup = async (req, res) =>{
         });
 
         // JWt Token
-        const token = jwt.sign({email:result.email, id:result._id }, SECRET_ACCESS);
+        const token = jwt.sign({email:result.email}, SECRET_ACCESS);
         res.send({
             status:true,
             user:result,
@@ -78,7 +78,7 @@ const login = async (req, res)=>{
                 msg:'Invalid Credentials !!'    
             });
         }  
-        const token = jwt.sign({email:exists.email, id:exists._id }, SECRET_ACCESS);
+        const token = jwt.sign({email:exists.email }, SECRET_ACCESS);
         res.send({
             status:true,
             user:exists,
