@@ -44,11 +44,11 @@ const signup = async (req, res) =>{
         });
 
         // JWt Token
-        const token = jwt.sign({email:result.email}, SECRET_ACCESS);
+        // const token = jwt.sign({email:result.email}, SECRET_ACCESS);
         res.send({
             status:true,
             user:result,
-            token:token,
+            // token:token,
             msg:"Signup Successfully"
         });
     } catch (_err) { 
@@ -78,21 +78,27 @@ const login = async (req, res)=>{
                 msg:'Invalid Credentials !!'    
             });
         }  
-        const token = jwt.sign({email:exists.email }, SECRET_ACCESS);
+        console.log("SECRET_ACCESS", SECRET_ACCESS);
+        const token = jwt.sign(
+            {user:exists}, 
+            SECRET_ACCESS, 
+            { expiresIn: "15m" }
+        ); 
         res.send({
             status:true,
-            user:exists,
+            user:exists, 
             token:token,
             msg:"Login Successfully"
         });
     } catch(err){ 
-        console.log(err);
+        console.log(err); 
     }
    
-}
+} 
 
-const user = asyncHandle( async (req, res) => {
+const current_user = asyncHandle( async (req, res) => {
+    console.log("req mm", req);
     res.json(req.user); 
 });
 
-module.exports = { login, signup, user }
+module.exports = { login, signup, current_user }

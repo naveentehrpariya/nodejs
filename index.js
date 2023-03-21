@@ -10,7 +10,7 @@ app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 app.use(errorHandler);
 
-const { login, signup, user } = require('./controllers/userController');
+const { login, signup, current_user } = require('./controllers/userController');
 const { addproducts, listProducts } = require(`./controllers/productsController`);
 
 app.get('/', (req, res)=>{ 
@@ -24,13 +24,13 @@ app.get('/', (req, res)=>{
 //  SIGN UP
 app.post('/signup', signup);
 app.post('/login', login);
-app.get('/user', validateToken, user); 
+app.get('/user', validateToken, current_user); 
  
 
 // ADD PRODUCTS
 app.post('/add-products', addproducts); 
 
- 
+  
 // List PRODUCTS
 app.get('/shop', listProducts); 
  
