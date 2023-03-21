@@ -1,38 +1,24 @@
 const express = require('express');
 const app = express();
 const errorHandler = require("./middlewares/errorHandler");
-const validateToken = require("./middlewares/validateToken");
-
 const cors = require('cors');
 require('./db/config');
 
+// MIDDLE-WARES 
 app.use(cors({ origin: true, credentials: true }));
-app.use(express.json());
-app.use(errorHandler);
+app.use(express.json()); 
+app.use(errorHandler);  
 
-const { login, signup, current_user } = require('./controllers/userController');
-const { addproducts, listProducts } = require(`./controllers/productsController`);
+// ROUTES
+app.use("/api/user", require('./routes/userRoutes'));
+app.use("/api/product", require('./routes/productsRoutes'));
 
+// TEST CHECK
 app.get('/', (req, res)=>{ 
     res.send({
         status:"Active",  
         code:200
     });  
 });
- 
- 
-//  SIGN UP
-app.post('/signup', signup);
-app.post('/login', login);
-app.get('/user', validateToken, current_user); 
- 
-
-// ADD PRODUCTS
-app.post('/add-products', addproducts); 
-
   
-// List PRODUCTS
-app.get('/shop', listProducts); 
- 
-
 app.listen(5000, ()=>{console.log("SERVER RUNNINGGGGG.....")});

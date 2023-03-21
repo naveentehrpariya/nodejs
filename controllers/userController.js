@@ -78,7 +78,6 @@ const login = async (req, res)=>{
                 msg:'Invalid Credentials !!'    
             });
         }  
-        console.log("SECRET_ACCESS", SECRET_ACCESS);
         const token = jwt.sign(
             {user:exists}, 
             SECRET_ACCESS, 
@@ -97,8 +96,7 @@ const login = async (req, res)=>{
 } 
 
 const current_user = asyncHandle( async (req, res) => {
-    console.log("req mm", req);
-    res.json(req.user); 
-});
+    res.json(req.user);  
+}); 
 
 module.exports = { login, signup, current_user }
