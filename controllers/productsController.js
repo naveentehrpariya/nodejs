@@ -1,4 +1,6 @@
 const { Products, validate } = require("../db/Products");
+const jwt = require('jsonwebtoken');
+const JWT_SECRET = process && process.env.SECRET_ACCESS;
 
 const addproducts = async (req, res)=>{
     const isValid = validate(req.body);
@@ -11,7 +13,18 @@ const addproducts = async (req, res)=>{
         });
     }  
     try {
-        const product = new Products(req.body);
+        const { name, description, price, category, thumb } = req.body;
+
+        const decodedToken = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+       
+        const product = new Products({
+            name : name,
+            description : description,
+            price : price,
+            category : category,
+            thumb : thumb,
+            user_by : decodedToken.user.username,
+        });
         const result = await product.save();
         if(result){ 
             res.send({ status:true, data:req.body });
@@ -26,7 +39,8 @@ const addproducts = async (req, res)=>{
 
 const listProducts = async (req, res)=>{
     try {
-        const result = await Products.find();
+        const decodedToken = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+        const result = await Products.find({user_by:decodedToken.user.username});
         if(result){ 
             res.send({ 
                 status:true, 
@@ -39,7 +53,10 @@ const listProducts = async (req, res)=>{
             }); 
         } 
     } catch(_err){ 
-        res.send({ status:false, error: _err });
+        res.send({ 
+            status:false, 
+            error: _err 
+        });
     } 
 }; 
 

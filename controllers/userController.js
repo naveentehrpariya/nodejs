@@ -22,14 +22,14 @@ const signup = async (req, res) =>{
         const exists_email = await User.findOne({email:email})
         if(exists_username){
            return res.send({ 
-                'status':418,
-                'msg':"Username already exists."
+                status:418,
+                msg:"username already exists."
             });
         }
         if(exists_email){
             return res.send({
-                'status':418,
-                'msg':"Email already exists."
+                status:418,
+                msg:"email already exists."
             });
         }
 

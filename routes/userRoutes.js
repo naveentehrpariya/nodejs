@@ -7,6 +7,6 @@ router.route('/signup').post(signup);
 
 router.route('/login').post(login);
 
-router.route('').get(validateToken, current_user);
+router.route('/profile').get(validateToken, current_user);
 
 module.exports = router; 

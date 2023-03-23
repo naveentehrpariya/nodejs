@@ -10,8 +10,8 @@ app.use(express.json());
 app.use(errorHandler);  
 
 // ROUTES
-app.use("/api/user", require('./routes/userRoutes'));
-app.use("/api/product", require('./routes/productsRoutes'));
+app.use("/api/admin/user", require('./routes/userRoutes'));
+app.use("/api/admin/product", require('./routes/productsRoutes'));
 
 // TEST CHECK
 app.get('/', (req, res)=>{ 
