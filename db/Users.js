@@ -1,46 +1,26 @@
 const mongoose = require('mongoose');
-const Ajv = require('ajv');
-const ajv = new Ajv({ allErrors:true}); 
 
 const schema = new mongoose.Schema({
     name: {
-        type:String,
-        require:true,
-        minLength:3
+        type:String, 
+        require:true
     },
     username: {
         type:String, 
         require:true,
-        minLength:3,
-        maxLength:10
     },
     email: {
         type:String,
-        require:true,
-        minLength:5
+        require:true
     },
     password: {
         type:String,
-        require:true,
-        minLength:4
+        require:true
     },
 });
-const user = mongoose.model('users', schema);
 
+const User = mongoose.model('users', schema);
 
-const userSchema = {   
-  type: 'object', 
-  properties: {
-    name: { type: 'string', minLength: 3 },
-    username: { type: 'string', minLength: 3, maxLength: 10 },
-    email: { type: 'string', minLength: 5 },
-    password: { type: 'string', minLength: 4 },
-  },
-  required: ['name', 'username', 'email', 'password'],
-};
-const validateUser = ajv.compile(userSchema);
-
-module.exports.validate = validateUser;
-module.exports.User = user;
+module.exports = User;
 
  

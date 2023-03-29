@@ -1,41 +1,48 @@
-const { User, validate } = require('../db/Users');
+const User  = require('../db/Users');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const SECRET_ACCESS = process.env && process.env.SECRET_ACCESS;
 const asyncHandle = require('express-async-handler');
+const Joi = require('joi'); 
 
 const signup = async (req, res) =>{
-    const { name, email, username, password } = req.body
-    const isValid = validate(req.body);
-    if (!isValid) { 
-        const errors = validate.errors.map(error => {
-          return {
-            status:false,
-            error: error
-        } ;
-        });
-        console.log(errors);
-      }  
+
+    const UserValidate = Joi.object({
+        name: Joi.string().required(),
+        username: Joi.string().required(),
+        email: Joi.string().email().required(),
+        password: Joi.string().required(),
+    });
+    const { error, value } = UserValidate.validate(req.body, {abortEarly: false});
+
+    if (error) {
+      return res.send({
+        status:false,
+        error : error
+      });
+    }  
+
+    const { name, email, username, password } = req.body;
+
     try { 
-        // Check username exists or not
+        // Check Username Exists
         const exists_username = await User.findOne({username:username})
         const exists_email = await User.findOne({email:email})
         if(exists_username){
-           return res.send({ 
-                status:418,
-                msg:"username already exists."
+            return res.status(418).json({
+               status:false,
+               message:'Username Already Taken!!',
             });
         }
         if(exists_email){
-            return res.send({
-                status:418,
-                msg:"email already exists."
-            });
+            return res.status(418).json({
+                status:false,
+                message:'Email Already Taken!!',
+             });
         }
 
         // encrypt password values
         const hash_pass = await bcrypt.hash(password, 10);
-
         const result = await User.create({
             name:name,
             email:email,
@@ -43,39 +50,51 @@ const signup = async (req, res) =>{
             username:username
         });
 
-        // JWt Token
-        // const token = jwt.sign({email:result.email}, SECRET_ACCESS);
         res.send({
             status:true,
             user:result,
-            // token:token,
             msg:"Signup Successfully"
         });
     } catch (_err) { 
         console.log(_err);
-        res.send({
+        return res.json({
             status:false,
-            errors:_err,
-            msg:"Something went wrong!!"
+            message:'Username Already Taken!!',
+            error:_err
         });
     }
 }; 
  
 const login = async (req, res)=>{
+
+    const UserValidate = Joi.object({
+        username: Joi.string().required(),
+        password: Joi.string().required(),
+    });
+
+    const { error, value } = UserValidate.validate(req.body, {abortEarly: false});
+    if (error) {
+        return res.json({
+          status:false,
+          error :error
+        });
+    } 
+
     const { username, password } = req.body;
+
     try {
         const exists = await User.findOne({username:username});
         if(!exists){
-            return res.send({
+            return res.status(403).json({
                 status:false,
-                msg:'404, user not found !!'
+                msg:'User Not Found !!'
             });
         } 
         const match_pass = await bcrypt.compare(password, exists.password);
         if(!match_pass){
-            res.send({
+            return res.status(403).json({
                 status:false,
-                msg:'Invalid Credentials !!'    
+                msg:'Invalid Details'
             });
         }  
         const token = jwt.sign(
@@ -83,11 +102,11 @@ const login = async (req, res)=>{
             SECRET_ACCESS, 
             { expiresIn: "15m" }
         ); 
-        res.send({
+        res.status(200).json({
             status:true,
+            msg:"Login Successfully",
             user:exists, 
-            token:token,
-            msg:"Login Successfully"
+            token:token
         });
     } catch(err){ 
         console.log(err); 
