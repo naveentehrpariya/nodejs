@@ -3,10 +3,9 @@ const jwt = require('jsonwebtoken');
 const JWT_SECRET = process && process.env.SECRET_ACCESS;
 
 const addproducts = async (req, res)=>{
-    
     try {
-        const { name, description, price, category, thumb } = req.body;
         const decodedToken = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+        const { name, description, price, category, thumb } = req.body;
         const product = new Products({
             name : name,
             description : description,

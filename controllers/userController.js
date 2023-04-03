@@ -90,7 +90,7 @@ const login = async (req, res)=>{
                 msg:'User Not Found !!'
             });
         } 
-        const match_pass = await bcrypt.compare(password, exists.password);
+        const match_pass = bcrypt.compare(password, exists.password);
         if(!match_pass){
             return res.status(403).json({
                 status:false,
@@ -100,7 +100,7 @@ const login = async (req, res)=>{
         const token = jwt.sign(
             {user:exists}, 
             SECRET_ACCESS, 
-            { expiresIn: "15m" }
+            { expiresIn: "58m" }
         ); 
         res.status(200).json({
             status:true,
