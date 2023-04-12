@@ -5,8 +5,8 @@ const { login, signup, current_user } = require('../controllers/userController')
 
 router.route('/signup').post(signup);
 
-router.route('/login').post(login);
+router.route('/login').post(login); 
 
-router.route('/profile').get(validateToken, current_user);
+router.route('/profile').get( current_user);
 
 module.exports = router; 

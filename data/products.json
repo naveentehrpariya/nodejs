@@ -1,0 +1,79 @@
+[
+  {
+    "name": "Samsung Galaxy S22",
+    "description": "Samsung Galaxy S22 with 5G and 256GB storage",
+    "category": "mobile",
+    "price": "90000",
+    "thumb": "https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-s22-1.jpg"
+  },
+  {
+    "name": "Dell XPS 13",
+    "description": "Dell XPS 13 laptop with 11th Gen Intel Core i7 and 16GB RAM",
+    "category": "laptop",
+    "price": "120000",
+    "thumb": "https://fdn2.gsmarena.com/vv/pics/dell/dell-xps-13-2022-1.jpg"
+  },
+  {
+    "name": "Sony Alpha a7 IV",
+    "description": "Sony Alpha a7 IV mirrorless camera with 35mm full-frame sensor",
+    "category": "camera",
+    "price": "240000",
+    "thumb": "https://fdn2.gsmarena.com/vv/pics/sony/sony-alpha-a7-iv-1.jpg"
+  },
+   {
+     "name": "MacBook Pro 16-inch",
+     "description": "Apple MacBook Pro 16-inch with M1 Max chip and 16GB RAM",
+     "category": "laptop",
+     "price": "220000",
+     "thumb": "https://fdn2.gsmarena.com/vv/pics/apple/apple-macbook-pro-16-2021-1.jpg"
+   },
+   {
+     "name": "Samsung Galaxy Watch 5",
+     "description": "Samsung Galaxy Watch 5 with 45mm case and LTE support",
+     "category": "wearable",
+     "price": "35000",
+     "thumb": "https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-watch-5-1.jpg"
+   },
+   {
+     "name": "Canon EOS R3",
+     "description": "Canon EOS R3 mirrorless camera with 24.1MP sensor and 6K RAW video",
+     "category": "camera",
+     "price": "400000",
+     "thumb": "https://fdn2.gsmarena.com/vv/pics/canon/canon-eos-r3-1.jpg"
+   },
+   {
+     "name": "LG OLED CX",
+     "description": "LG OLED CX 65-inch 4K smart TV with AI ThinQ and Dolby Atmos",
+     "category": "tv",
+     "price": "150000",
+     "thumb": "https://fdn2.gsmarena.com/vv/pics/lg/lg-oled-cx-65-1.jpg"
+   },
+   {
+     "name": "Microsoft Surface Laptop 4",
+     "description": "Microsoft Surface Laptop 4 with 11th Gen Intel Core i5 and 8GB RAM",
+     "category": "laptop",
+     "price": "80000",
+     "thumb": "https://fdn2.gsmarena.com/vv/pics/microsoft/microsoft-surface-laptop-4-1.jpg"
+   },
+   {
+     "name": "Sony WH-1000XM4",
+     "description": "Sony WH-1000XM4 wireless noise-canceling headphones",
+     "category": "audio",
+     "price": "30000",
+     "thumb": "https://fdn2.gsmarena.com/vv/pics/sony/sony-wh-1000xm4-1.jpg"
+   },
+   {
+     "name": "Apple Watch Series 8",
+     "description": "Apple Watch Series 8 with always-on display and blood glucose monitoring",
+     "category": "wearable",
+     "price": "40000",
+     "thumb": "https://fdn2.gsmarena.com/vv/pics/apple/apple-watch-series-8-1.jpg"
+   },
+   {
+     "name": "Google Pixel 6 Pro",
+     "description": "Google Pixel 6 Pro with 6.7-inch OLED display and 5G support",
+     "category": "mobile",
+     "price": "90000",
+     "thumb": "https://fdn2.gsmarena.com/vv/pics/google/google-pixel-6-pro-1.jpg"
+   }
+]
