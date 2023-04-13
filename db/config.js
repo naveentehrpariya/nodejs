@@ -1,9 +1,11 @@
-require('dotenv/config');
+const dotenv = require('dotenv');
+dotenv.config({path:'config.env'});
+
 const mongoose = require('mongoose');
 mongoose.set('strictQuery', true);
   
 // mongoose.connect( `mongodb+srv://naveentehrpariya:`+process.env.PASS+`@cluster0.rnebihn.mongodb.net/test`, {
-mongoose.connect( `mongodb+srv://naveenfp:'+process.env.PASS+'@cluster0.5c8ne.mongodb.net/test`, {
+mongoose.connect( `mongodb+srv://naveenfp:${process.env.DB_PASS}@cluster0.5c8ne.mongodb.net/test`, {
     useNewUrlParser: true,   
     serverSelectionTimeoutMS: 5000,    
     autoIndex: false, // Don't build indexes 

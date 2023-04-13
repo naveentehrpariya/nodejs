@@ -40,6 +40,8 @@ const listProducts = async (req, res)=>{
         const excludeQueries = ['page', 'sort', 'limit', 'fields']
         excludeQueries.forEach(el => delete QueryObject[el]);
 
+        const opQuery = QueryObject.replace('/\b(gte|gt|lte|lt)\b/');
+
         const result = await Products.find(req.query)
         // .where("price").equals(90000);
         if(result){ 
