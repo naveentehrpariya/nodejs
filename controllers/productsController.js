@@ -25,7 +25,6 @@ const addproducts = async (req, res)=>{
             error:_err 
         });
     } 
-   
 };
 
 const listProducts = async (req, res)=>{
@@ -37,22 +36,46 @@ const listProducts = async (req, res)=>{
         // console.log(query);
 
         const QueryObject  = {...req.query}
+
+        // REMOVE SORTING PAREMETER FROM QUERY
         const excludeQueries = ['page', 'sort', 'limit', 'fields']
         excludeQueries.forEach(el => delete QueryObject[el]);
 
-        const opQuery = QueryObject.replace('/\b(gte|gt|lte|lt)\b/');
+        // ORDER BY 
+        let querySting = JSON.stringify(QueryObject);
+        querySting = querySting.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
 
-        const result = await Products.find(req.query)
-        // .where("price").equals(90000);
-        if(result){ 
+        // JSON.parse(querySting)
+        let query = Products.find(JSON.parse(querySting));
+        console.log("query", req.query);
+
+        // SORTING
+        if(req.query.sort){
+           query = query.sort(req.query.sort);
+        }
+
+        // SELECT DISIRED FIELDS
+        if(req.query.fields){
+            const q = req.query.fields.split(',').join(' ');
+            query = query.select({q});
+        }
+
+        // PAGINATION 
+        const page = req.query.page *1;
+        const limit = req.query.limit * 1 || 2;
+        const skip = (page - 1) * limit;
+        query.skip(skip).limit(limit);
+
+        const data = await query;
+        if(data){ 
             res.json({ 
                 status:true, 
-                data: result
+                data: data
             });
         } else {  
             res.json({ 
                 status:true,
-                data: result
+                data: data
             }); 
         } 
     } catch(_err){ 

@@ -8,10 +8,15 @@ const schema = new mongo.Schema({
     price:Number,
     category:String,
     thumb:String,
+    rating :{type:Number},
+    technology: String,
+    discount:String,
+    emi : String,
+    slug: String,
+    year: Number,
     createdAt: {
         type: Date,
-        default: Date.now(),
-        select: false
+        default: Date.now()
     },
 });   
 module.exports = mongo.model('products', schema);

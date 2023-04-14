@@ -1,5 +1,7 @@
 const express = require('express');
 const app = express();
+const morgan = require('morgan')
+app.use(morgan('dev')); 
 
 // const errorHandler = require("./middlewares/errorHandler");
 const cors = require('cors');
