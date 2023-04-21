@@ -82,4 +82,30 @@ const productDetail = async (req, res)=>{
     } 
 }; 
 
-module.exports = { addproducts, listProducts, productDetail } 
+const tour_stats = async (req, res)=>{
+
+    const stats = Products.aggregate([
+        {
+            $match: {
+              price : { $gt:'2000'}
+            }
+        }
+    ])
+
+
+    try {
+        const id = req.params;
+        res.json({ 
+            status:true, 
+            data: id
+        });
+    } catch(_err){ 
+        res.json({ 
+            status:false, 
+            error: _err 
+        });
+    } 
+}; 
+
+
+module.exports = { addproducts, listProducts, productDetail, tour_stats } 
