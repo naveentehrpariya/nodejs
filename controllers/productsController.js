@@ -1,3 +1,4 @@
+const { error } = require("ajv/dist/vocabularies/applicator/dependencies");
 const Products  = require("../db/Products");
 const APIFeatures  = require("../lib/APIFeatures");
 // const jwt = require('jsonwebtoken');
@@ -8,7 +9,6 @@ const addproducts = async (req, res)=>{
     try {
         // const decodedToken = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
         // decodedToken.user.username
-
         const updated = Object.assign( {user_id:5}, req.body );
         const product = await Products.create(updated);
         if(product){ 
@@ -21,20 +21,19 @@ const addproducts = async (req, res)=>{
                 status:false
             }); 
         } 
-    } catch(_err){ 
+    } catch(err){ 
+        console.log(err);
         res.send({ 
             status:false, 
-            error:_err 
+            error:err 
         });
     } 
 };
 
 const listProducts = async (req, res)=>{
     try {
-
         const feature = new APIFeatures(Products.find(), req.query).filter().sort().limit_fields().paginate();
         const data = await feature.query;
-
         if(data){ 
             res.json({ 
                 status:true, 
@@ -83,22 +82,29 @@ const productDetail = async (req, res)=>{
 }; 
 
 const tour_stats = async (req, res)=>{
-
-    const stats = Products.aggregate([
-        {
-            $match: {
-              price : { $gt:'2000'}
-            }
-        }
-    ])
-
-
     try {
-        const id = req.params;
-        res.json({ 
-            status:true, 
-            data: id
-        });
+        const stats = await Products.aggregate([
+            {
+                $match: {
+                    price : { $gte:2000}
+                }
+            },
+            {
+                $group: {
+                     _id: null,
+                     averagePrice: { $avg: '$price'},
+                     minRating: { $min: '$rating'},
+                     maxRating: { $max: '$rating'},
+                     avarageRating: { $avg: '$rating'},
+                }
+            }
+        ]);
+        if(stats){
+            res.json({ 
+                status:true, 
+                data: stats
+            });
+        }
     } catch(_err){ 
         res.json({ 
             status:false, 
@@ -106,6 +112,7 @@ const tour_stats = async (req, res)=>{
         });
     } 
 }; 
+
 
 
 module.exports = { addproducts, listProducts, productDetail, tour_stats } 
