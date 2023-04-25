@@ -3,10 +3,21 @@ const slugify = require('slugify');
 const schema = new mongo.Schema({
     name:{ 
         type:String,
-        require:true
+        require:true,
+        unique :true,
+        // minLength:[50, 'Name Length should be min of 50 charcters']
     },
     description:String,
-    price:Number,
+    price:  {
+        type :String,
+        unique:true,
+        // validate : {
+        //     validator : function(val){ 
+        //         return val < "1000"
+        //     },
+        //     message : 'Price can not be 20000'
+        // }
+    },
     category:String,
     thumb:String,
     rating :{type:Number},
@@ -17,7 +28,13 @@ const schema = new mongo.Schema({
     slugtest: {
         type:String
     },
-    year: Number,
+    // year: {
+    //     type :Number,
+    //     enum : { 
+    //         values : [2022, 2023, 2020, 2021],
+    //         message : "These Fields are not allowed"
+    //     }
+    // },
     createdAt: {
         type: Date,
         default: Date.now()     
