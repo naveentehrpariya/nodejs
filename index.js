@@ -1,13 +1,16 @@
 const express = require('express');
 const app = express();
-const Pusher = require('pusher');
+
 const morgan = require('morgan')
 app.use(morgan('dev')); 
+
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-// const errorHandler = require("./middlewares/errorHandler");
+
+const globalErrorHandler = require("./middlewares/gobalErrorHandler");
 const cors = require('cors');
+const AppError = require('./utils/AppError');
 require('./db/config');
  
 // MIDDLE-WARES 
@@ -24,12 +27,12 @@ app.use("/product", require('./routes/productsRoutes'));
 app.get('/', (req, res)=>{ 
     res.send({
         status:"Active",  
-        code:200
+        Status :200
     });  
 }); 
 
 
-
+const Pusher = require('pusher');
 const pusher = new Pusher({
     appId: '1569306',
     key: '35a80b2b96010f87b14f',
@@ -39,11 +42,13 @@ const pusher = new Pusher({
 });
 
 app.post('/pusher/auth', (req, res) => {
+
     const socketId = req.body.socket_id;
     const channel = req.body.channel_name;
     const user = req.body.user_id; // replace this with your own user authentication logic
     
     console.log("req.body",req.body);
+
     if (!user) {
       return res.status(401).send('Unauthorized');
     }
@@ -52,5 +57,13 @@ app.post('/pusher/auth', (req, res) => {
     console.log("Auth",auth);
     res.send(auth);
 });
+
+
+app.all('*', (req, res, next) => { 
+    next(new AppError("page not found !!", 404    ));         
+});
+
+app.use(globalErrorHandler); 
   
-app.listen(5000, ()=>{console.log("SERVER RUNNINGGGGG.....")});
+const port = 8080;
+app.listen(port, ()=>{ console.log(`On PORT ${port} SERVER RUNNINGGGGG.....`) });

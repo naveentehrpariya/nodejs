@@ -28,7 +28,8 @@
     "pusher": "^5.1.2",
     "pusher-js": "^8.0.2",
     "react-toastify": "^9.1.1",
-    "slugify": "^1.6.6"
+    "slugify": "^1.6.6",
+    "validator": "^13.9.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.20"

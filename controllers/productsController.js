@@ -1,58 +1,44 @@
-const { error } = require("ajv/dist/vocabularies/applicator/dependencies");
 const Products  = require("../db/Products");
-const APIFeatures  = require("../lib/APIFeatures");
+const APIFeatures  = require("../utils/APIFeatures");
+const catchAsync  = require("../utils/catchAsync");
 // const jwt = require('jsonwebtoken');
 // const JWT_SECRET = process && process.env.SECRET_ACCESS;
 
 
-const addproducts = async (req, res)=>{
-    try {
-        // const decodedToken = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
-        // decodedToken.user.username
-        const updated = Object.assign( {user_id:5}, req.body );
-        const product = await Products.create(updated);
-        if(product){ 
-            res.status(200).json({ 
-                status:true, 
-                data:product 
-            });
-        } else {  
-            res.status(400).json({
-                error:product
-            }); 
-        } 
-    } catch(err){ 
-        console.log(err);
-        res.send({ 
-            status:false, 
-            error:err 
+const addproducts = catchAsync ( async (req, res)=>{
+    // const decodedToken = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+    // decodedToken.user.username
+    const updated = Object.assign( {user_id:5}, req.body );
+    const product = await Products.create(updated);
+    if(product){ 
+        res.status(200).json({ 
+            status:true, 
+            data:product 
         });
+    } else {  
+        res.status(400).json({
+            error:product
+        }); 
     } 
-};
+});
 
-const listProducts = async (req, res)=>{
-    try {
-        const feature = new APIFeatures(Products.find(), req.query).filter().sort().limit_fields().paginate();
-        const data = await feature.query;
-        if(data){ 
-            res.json({ 
-                status:true, 
-                data: data
-            });
-        } else {  
-            res.json({ 
-                status:true,
-                data: data
-            }); 
-        } 
-    } catch(_err){ 
-        console.log(_err);
+
+
+const listProducts = catchAsync ( async (req, res)=>{
+    const feature = new APIFeatures(Products.find(), req.query).filter().sort().limit_fields().paginate();
+    const data = await feature.query;
+    if(data){ 
         res.json({ 
-            status:false, 
-            error: _err 
+            status:true, 
+            data: data
         });
+    } else {  
+        res.json({ 
+            status:true,
+            data: data
+        }); 
     } 
-}; 
+}); 
 
 const productDetail = async (req, res)=>{
     try {
@@ -81,37 +67,30 @@ const productDetail = async (req, res)=>{
     } 
 }; 
 
-const tour_stats = async (req, res)=>{
-    try {
-        const stats = await Products.aggregate([
-            {
-                $match: {
-                    price : { $gte:2000}
-                }
-            },
-            {
-                $group: {
-                     _id: null,
-                     averagePrice: { $avg: '$price'},
-                     minRating: { $min: '$rating'},
-                     maxRating: { $max: '$rating'},
-                     avarageRating: { $avg: '$rating'},
-                }
+const tour_stats = catchAsync ( async (req, res)=>{
+    const stats = await Products.aggregate([
+        {
+            $match: {
+                price : { $gte:2000}
             }
-        ]);
-        if(stats){
-            res.json({ 
-                status:true, 
-                data: stats
-            });
+        },
+        {
+            $group: {
+                    _id: null,
+                    averagePrice: { $avg: '$price'},
+                    minRating: { $min: '$rating'},
+                    maxRating: { $max: '$rating'},
+                    avarageRating: { $avg: '$rating'},
+            }
         }
-    } catch(_err){ 
+    ]);
+    if(stats){
         res.json({ 
-            status:false, 
-            error: _err 
+            status:true, 
+            data: stats
         });
-    } 
-}; 
+    }
+}); 
 
 
 
