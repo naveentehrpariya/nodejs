@@ -1,16 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const validateToken = require("../middlewares/validateToken");
 const { addproducts, listProducts, productDetail, tour_stats } = require(`../controllers/productsController`);
-
-// TOKEN VALIDATOR
-// router.use(validateToken); 
+const { validateToken } = require('../controllers/authController');
 
 // API ROUTES
-router.route('').post(addproducts).get(listProducts);
+router.route('').post(validateToken, addproducts).get(validateToken, listProducts);
 
-router.route('/stats').get(tour_stats);
+router.route('/stats').get(validateToken, tour_stats);
 
-router.route('/:id').get(productDetail);
+router.route('/:id').get(validateToken, productDetail);
 
 module.exports = router; 

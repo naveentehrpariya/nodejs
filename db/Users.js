@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcrypt');
-const { func } = require('joi');
 
 const schema = new mongoose.Schema({
     name: {
@@ -28,11 +27,13 @@ const schema = new mongoose.Schema({
     },
     password: {
         type:String,
-        required:true
+        required:true,
+        select:false
     },
     confirmPassword: {
         type:String,
         required:true,
+        select:false,
         validate : {
             validator : function (val) { return val === this.password },
             message : 'Password did\'t matched.'

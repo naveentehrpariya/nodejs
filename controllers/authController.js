@@ -1,10 +1,12 @@
 const User = require("../db/Users");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const SECRET_ACCESS = process.env && process.env.SECRET_ACCESS;
 const catchAsync = require("../utils/catchAsync");
+const {promisify} = require("util");
 const AppError = require("../utils/AppError");
 
+const SECRET_ACCESS = process.env && process.env.SECRET_ACCESS;
+const key = process && process.env && process.env.SECRET_ACCESS;
 
 const signToken = async (id) => {
   const token = jwt.sign(
@@ -87,9 +89,31 @@ const login = catchAsync( async (req, res, next) => {
    });
 });
 
+const validateToken = catchAsync( async (req, res, next) => {
+  let authHeader = req.headers.Authorization || req.headers.authorization;
+  let token;
+  if (authHeader && authHeader.startsWith("Bearer")) {
+    token = authHeader.split(" ")[1];
+    if (!token) {
+      next( new AppError("User is not authorized or token is missing", 403));
+    }
+    const decode = await promisify(jwt.verify)(token, key);
+    let result;
+    if(decode){ 
+      const id = decode.id;
+      result = await User.findById(id);
+      req.user = result;
+      next(); 
+    } else { 
+      next(new AppError('User is not authorized', 401)); 
+    }
+  } else { 
+    next( new AppError("Token is missing", 401));
+  }
+});
 
 // const current_user = asyncHandle( async (req, res) => {
 //     res.json(req.user);
 // });
 
-module.exports = {  signup, login  };
+module.exports = {  signup, login, validateToken };

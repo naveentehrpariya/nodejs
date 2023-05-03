@@ -1,13 +1,12 @@
 const Products  = require("../db/Products");
 const APIFeatures  = require("../utils/APIFeatures");
 const catchAsync  = require("../utils/catchAsync");
-// const jwt = require('jsonwebtoken');
-// const JWT_SECRET = process && process.env.SECRET_ACCESS;
-
 
 const addproducts = catchAsync ( async (req, res)=>{
+   
     // const decodedToken = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
     // decodedToken.user.username
+    
     const updated = Object.assign( {user_id:5}, req.body );
     const product = await Products.create(updated);
     if(product){ 
@@ -25,6 +24,9 @@ const addproducts = catchAsync ( async (req, res)=>{
 
 
 const listProducts = catchAsync ( async (req, res)=>{
+
+    console.log("req body", req.user);
+    
     const feature = new APIFeatures(Products.find(), req.query).filter().sort().limit_fields().paginate();
     const data = await feature.query;
     if(data){ 
