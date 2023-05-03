@@ -85,7 +85,6 @@ const login = catchAsync( async (req, res, next) => {
     user : user,
     token
    });
-
 });
 
 
