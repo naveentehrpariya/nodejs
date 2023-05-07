@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 
 const schema = new mongoose.Schema({
     name: {
@@ -23,7 +24,6 @@ const schema = new mongoose.Schema({
     },
     avatar: {
         type:String,
-        // require:[true, 'Please add your profile photo.']
     },
     password: {
         type:String,
@@ -38,7 +38,9 @@ const schema = new mongoose.Schema({
             validator : function (val) { return val === this.password },
             message : 'Password did\'t matched.'
         }
-    }
+    },
+    passwordResetToken : String,
+    resetTokenExpire : Date,
 });
 
 schema.pre('save', async function(next) { 
@@ -51,9 +53,15 @@ schema.methods.checkPassword = async function (pass, hash) {
     return await bcrypt.compare(pass, hash);
 }
 
+schema.methods.createPasswordResetToken  = async function() { 
+    const token = crypto.randomBytes(32).toString('hex');
+    this.passwordResetToken = crypto.createHash('sha256').update(token).digest('hex');
+    this.resetTokenExpire = Date.now() + 10 * 60 * 1000;
+    console.log(token, this.passwordResetToken);
+    return token;
+}
 
 const User = mongoose.model('users', schema);
-
 module.exports = User;
 
  

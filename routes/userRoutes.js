@@ -6,6 +6,8 @@ router.route('/signup').post(authController.signup);
 
 router.route('/login').post(authController.login); 
 
+router.route('/forgotpassword').post(authController.forgotPassword); 
+
 // router.route('/profile').get( authController.current_user);
 
 module.exports = router; 

@@ -66,7 +66,7 @@ const signup = catchAsync(async (req, res) => {
 });
 
 
-const login = catchAsync( async (req, res, next) => { 
+const login = catchAsync ( async (req, res, next) => { 
 
    const { email, password } = req.body;
 
@@ -89,19 +89,18 @@ const login = catchAsync( async (req, res, next) => {
    });
 });
 
-const validateToken = catchAsync( async (req, res, next) => {
+const validateToken = catchAsync ( async (req, res, next) => {
+
   let authHeader = req.headers.Authorization || req.headers.authorization;
-  let token;
+
   if (authHeader && authHeader.startsWith("Bearer")) {
-    token = authHeader.split(" ")[1];
+    let token = authHeader.split(" ")[1];
     if (!token) {
       next( new AppError("User is not authorized or token is missing", 403));
     }
     const decode = await promisify(jwt.verify)(token, key);
-    let result;
     if(decode){ 
-      const id = decode.id;
-      result = await User.findById(id);
+      let result = await User.findById(decode.id);
       req.user = result;
       next(); 
     } else { 
@@ -112,8 +111,28 @@ const validateToken = catchAsync( async (req, res, next) => {
   }
 });
 
-// const current_user = asyncHandle( async (req, res) => {
-//     res.json(req.user);
-// });
+const profile = catchAsync ( async (req, res) => {
+    res.json(req.user);
+});
 
-module.exports = {  signup, login, validateToken };
+const forgotPassword = catchAsync ( async (req, res, next) => {
+
+  // 1. Check is email valid or not
+  const user = await User.findOne({email:req.body.email});
+  if(!user){
+     return next(new AppError("no user found associated with this email.", 404));
+  } 
+  
+  // 2. Generate randow token string
+  const resetToken = user.createPasswordResetToken();
+  await user.save({validateBeforeSave:false});
+
+
+
+  // 3. send token to email using nodemailer
+  
+});
+
+
+
+module.exports = {  signup, login, validateToken, profile, forgotPassword };
