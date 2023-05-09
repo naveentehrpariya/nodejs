@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const catchAsync = require("../utils/catchAsync");
 const {promisify} = require("util");
 const AppError = require("../utils/AppError");
+const SendEmail = require("../utils/Email");
 
 const SECRET_ACCESS = process.env && process.env.SECRET_ACCESS;
 const key = process && process.env && process.env.SECRET_ACCESS;
@@ -20,26 +21,6 @@ const signToken = async (id) => {
 const signup = catchAsync(async (req, res) => {
 
   const { name, username, email, avatar, password, confirmPassword } = req.body;
-
-  // Check Username Exists
-//   const exists_username = await User.findOne({ username: username });
-//   const exists_email = await User.findOne({ email: email });
-
-//   if (exists_username) {
-//     return res.status(418).json({
-//       status: false,
-//       message: "Username Already Taken!!",
-//     });
-//   }
-//   if (exists_email) {
-//     return res.status(418).json({
-//       status: false,
-//       message: "Email Already Taken!!",
-//     });
-//   }
-
-  // encrypt password values
-//   const hash_pass = await bcrypt.hash(password, 10);
   await User.syncIndexes();
   const result = await User.create({
     name: name,
@@ -67,21 +48,15 @@ const signup = catchAsync(async (req, res) => {
 
 
 const login = catchAsync ( async (req, res, next) => { 
-
    const { email, password } = req.body;
-
    if(!email || !password){
       return next(new AppError("Email and password is required !!", 401))
    }
-
    const user = await User.findOne({email}).select('+password');
-
    if(!user || !(await user.checkPassword(password, user.password))){
       return next(new AppError("Email or password is invalid !!", 401))
    }
-
    const token = await signToken(user._id);
-
    res.status(200).json({
     message:"Login Successfully !!",
     user : user,
@@ -124,15 +99,37 @@ const forgotPassword = catchAsync ( async (req, res, next) => {
   } 
   
   // 2. Generate randow token string
-  const resetToken = user.createPasswordResetToken();
+  const resetToken = await user.createPasswordResetToken();
   await user.save({validateBeforeSave:false});
 
-
-
   // 3. send token to email using nodemailer
-  
+
+  const resetTokenUrl = `${req.protocol}://${req.get('host')}/user/resetpassword/${resetToken}`
+  const message = `Forgot your password. Click ${resetTokenUrl} the link to reset your password.`
+  console.log("resetTokenUrl", resetTokenUrl);
+  console.log("message", message);
+  try{
+    const send = await SendEmail({
+      email:user.email,
+      subject:"Reset your password.",
+      message
+    });
+    console.log('send', send);
+    res.status(200).json({message:"Password Reset Successfully."})
+  } catch (err){
+    user.passwordResetToken = undefined;
+    user.resetTokenExpire = undefined;
+    await user.save({validateBeforeSave:false});
+    next(new AppError("Failed to send mail. Please try again later.", 500))
+  }
 });
 
 
 
-module.exports = {  signup, login, validateToken, profile, forgotPassword };
+const resetpassword = catchAsync ( async (req, res) => {
+  res.json(req);
+});
+
+
+
+module.exports = {  signup, login, validateToken, profile, forgotPassword,resetpassword };
