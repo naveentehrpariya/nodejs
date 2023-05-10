@@ -39,6 +39,7 @@ const schema = new mongoose.Schema({
             message : 'Password did\'t matched.'
         }
     },
+    changedPasswordAt: Date,
     passwordResetToken : String,
     resetTokenExpire : Date,
 });
