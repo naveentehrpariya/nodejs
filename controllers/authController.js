@@ -19,6 +19,8 @@ const signToken = async (id) => {
   return token
 }
 
+
+
 const signup = catchAsync(async (req, res) => {
   const { name, username, email, avatar, password, confirmPassword } = req.body;
   await User.syncIndexes();
@@ -46,6 +48,8 @@ const signup = catchAsync(async (req, res) => {
 });
 
 
+
+
 const login = catchAsync ( async (req, res, next) => { 
    const { email, password } = req.body;
    if(!email || !password){
@@ -62,6 +66,8 @@ const login = catchAsync ( async (req, res, next) => {
     token
    });
 });
+
+
 
 const validateToken = catchAsync ( async (req, res, next) => {
 
@@ -85,9 +91,13 @@ const validateToken = catchAsync ( async (req, res, next) => {
   }
 });
 
+
+
 const profile = catchAsync ( async (req, res) => {
     res.json(req.user);
 });
+
+
 
 const forgotPassword = catchAsync ( async (req, res, next) => {
   // 1. Check is email valid or not
@@ -119,6 +129,8 @@ const forgotPassword = catchAsync ( async (req, res, next) => {
   }
 });
 
+
+
 const resetpassword = catchAsync ( async (req, res, next) => {
   // 1. get user token
   const hashToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
@@ -138,6 +150,7 @@ const resetpassword = catchAsync ( async (req, res, next) => {
   await user.save({validateBeforeSave:false});
 
   // 3. Update changedPassswordAt Property
+  
 
   // 4. login user in send JWT 
   const token = await signToken(user._id);
