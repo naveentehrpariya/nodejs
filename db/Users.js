@@ -39,6 +39,11 @@ const schema = new mongoose.Schema({
             message : 'Password did\'t matched.'
         }
     },
+    active : { 
+        type:Boolean,
+        default:true,
+        select:false,
+    },
     changedPasswordAt: Date,
     passwordResetToken : String,
     resetTokenExpire : Date,
@@ -48,6 +53,11 @@ schema.pre('save', async function(next) {
     if(!this.isModified('password')) return next();
     this.password = await bcrypt.hash(this.password, 12);
     this.confirmPassword = undefined;
+});
+
+// To remove all inactive user from search results
+schema.pre(/ˆfind/, async function(next) { 
+    this.find({active: {$ne:false}});    
 });
 
 schema.methods.checkPassword = async function (pass, hash) { 

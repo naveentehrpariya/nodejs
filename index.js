@@ -19,8 +19,9 @@ app.use(express.json());
 // app.use(errorHandler);  
 
 // ROUTES
-app.use("/user", require('./routes/userRoutes'));
+app.use("/user", require('./routes/authRoutes'));
 app.use("/product", require('./routes/productsRoutes'));
+app.use("/user", require('./routes/userRoutes'));
   
 
 // TEST CHECK
@@ -28,7 +29,7 @@ app.get('/', (req, res)=>{
     res.send({
         status:"Active",  
         Status :200
-    });  
+    });   
 }); 
 
 
