@@ -19,8 +19,6 @@ const signToken = async (id) => {
   return token
 }
 
-
-
 const signup = catchAsync(async (req, res) => {
   const { name, username, email, avatar, password, confirmPassword } = req.body;
   await User.syncIndexes();
@@ -60,13 +58,19 @@ const login = catchAsync ( async (req, res, next) => {
       return next(new AppError("Email or password is invalid !!", 401))
    }
    const token = await signToken(user._id);
+   
+   // Send jwt via cookie
+   res.cookie('jwt', token, {
+    expires:new Date(Date.now() + 30*24*60*60*1000),
+    httpOnly:true,
+   });
+
    res.status(200).json({
     message:"Login Successfully !!",
     user : user,
     token
    });
 });
-
 
 
 const validateToken = catchAsync ( async (req, res, next) => {
@@ -92,11 +96,9 @@ const validateToken = catchAsync ( async (req, res, next) => {
 });
 
 
-
 const profile = catchAsync ( async (req, res) => {
     res.json(req.user);
 });
-
 
 
 const forgotPassword = catchAsync ( async (req, res, next) => {
