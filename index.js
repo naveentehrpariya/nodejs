@@ -24,7 +24,6 @@ app.use(express.json());
 app.use("/user", require('./routes/authRoutes'));
 app.use("/product", require('./routes/productsRoutes'));
 app.use("/user", require('./routes/userRoutes'));
-  
 
 // TEST CHECK
 app.get('/', (req, res)=>{ 
@@ -57,26 +56,32 @@ app.post('/pusher/auth', (req, res) => {
 });
 
 
-async function searchCustomAPI(apiKey, searchEngineId, query) {
-  const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${searchEngineId}&q=${query}`;
-  try {
-    const response = await axios.get(url);
-    const searchResults = response.data.items;
-    searchResults.forEach((result) => {
-      console.log('Title:', result.title);
-      console.log('URL:', result.link);
-      console.log('Snippet:', result.snippet);
-      console.log('------------------------');
-    });
-  } catch (error) {
-    console.error('Error:', error.message);
-  }
-}
-const apiKey = 'YOUR_API_KEY';
-const searchEngineId = 'YOUR_SEARCH_ENGINE_ID';
-const query = 'YOUR_QUERY';
-searchCustomAPI(apiKey, searchEngineId, query);
 
+app.post('/links', async (req, res) => {
+    try {
+        const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY
+        const ENGINE_ID = process.env.ENGINE_ID
+        const query = 'what is the name president of india ??';
+        const url = `https://www.googleapis.com/customsearch/v1?key=${GOOGLE_API_KEY}&cx=${ENGINE_ID}&q=${query}`;
+        const response = await axios.get(url);
+        const searchResults = response.data.items;
+        let results = [];
+        searchResults.forEach((result) => {
+            const data = [{
+                title:result.title,
+                link:result.link,
+                snippet:result.snippet,
+            }];
+            results.push(data);
+        });
+        res.json({
+            message:'successfully fetched !!',
+            data:results
+        })
+    } catch (error) {
+        console.error('Error:', error.message);
+    }
+});
 
 
 
