@@ -23,7 +23,6 @@ app.use(express.json());
 app.use("/user", require('./routes/authRoutes'));
 app.use("/product", require('./routes/productsRoutes'));
 app.use("/user", require('./routes/userRoutes'));
-  
 
 // TEST CHECK
 app.get('/', (req, res)=>{ 
@@ -33,32 +32,23 @@ app.get('/', (req, res)=>{
     });   
 }); 
 
-const Pusher = require('pusher');
-const pusher = new Pusher({
-    appId: '1569306',
-    key: '35a80b2b96010f87b14f',
-    secret: '90644451264fded8b7b0',
-    cluster: 'eu',
-    useTLS: true
+
+const { Configuration, OpenAIApi } = require("openai");
+const configuration = new Configuration({
+  apiKey: process.env.OPENAPI,
 });
+const openai = new OpenAIApi(configuration);
 
-app.post('/pusher/auth', (req, res) => {
-
-    const socketId = req.body.socket_id;
-    const channel = req.body.channel_name;
-    const user = req.body.user_id; // replace this with your own user authentication logic
-    
-    console.log("req.body",req.body);
-
-    if (!user) {
-      return res.status(401).send('Unauthorized');
-    }
-    
-    const auth = pusher.authenticate(socketId, channel, user);
-    console.log("Auth",auth);
-    res.send(auth);
+app.post('/chat', async (req, res) => { 
+    const chatCompletion = await openai.createChatCompletion({
+      model: "text-davinci-002",
+      messages: [{role: "user", content: "Hello world"}],
+    });
+    res.status(200).json({
+        "status":true,
+        "message":chatCompletion.data.choices[0].message
+    })
 });
-
 
 app.all('*', (req, res, next) => { 
     next(new AppError("page not found !!", 404    ));         

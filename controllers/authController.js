@@ -159,9 +159,11 @@ const resetpassword = catchAsync ( async (req, res, next) => {
   res.json({
     message:"Password changed successfully.",
     token
-  });
-
+  }); 
 });
+
+
+
 
 
 
