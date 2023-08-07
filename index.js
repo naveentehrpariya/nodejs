@@ -1,5 +1,7 @@
 const express = require('express');
 const app = express();
+const axios = require('axios');
+
 
 const morgan = require('morgan')
 app.use(morgan('dev')); 
@@ -43,28 +45,70 @@ const pusher = new Pusher({
 });
 
 app.post('/pusher/auth', (req, res) => {
-
     const socketId = req.body.socket_id;
     const channel = req.body.channel_name;
     const user = req.body.user_id; // replace this with your own user authentication logic
-    
-    console.log("req.body",req.body);
-
     if (!user) {
       return res.status(401).send('Unauthorized');
     }
-    
     const auth = pusher.authenticate(socketId, channel, user);
     console.log("Auth",auth);
     res.send(auth);
 });
 
 
+async function searchCustomAPI(apiKey, searchEngineId, query) {
+  const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${searchEngineId}&q=${query}`;
+  try {
+    const response = await axios.get(url);
+    const searchResults = response.data.items;
+    searchResults.forEach((result) => {
+      console.log('Title:', result.title);
+      console.log('URL:', result.link);
+      console.log('Snippet:', result.snippet);
+      console.log('------------------------');
+    });
+  } catch (error) {
+    console.error('Error:', error.message);
+  }
+}
+const apiKey = 'YOUR_API_KEY';
+const searchEngineId = 'YOUR_SEARCH_ENGINE_ID';
+const query = 'YOUR_QUERY';
+searchCustomAPI(apiKey, searchEngineId, query);
+
+
+
+
+const TextRazor = require('textrazor');
+app.post('/rajor', async (req, res) => {
+    try {
+        const textRazor = new TextRazor(process.env.RAJOR_API);
+        const content = 'provide links top 10 books of skill development ??'
+        const options = { extractors: ["links"], }
+        textRazor.exec(content, options)
+        .then(ress => {
+            res.json({
+                msg:ress
+            });
+        })
+        .catch(err => {
+            console.error(err);
+        })
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            status:500,
+            error:error,
+            msg:'Internal Server Error',
+        });
+    }
+});
+ 
 app.all('*', (req, res, next) => { 
     next(new AppError("page not found !!", 404    ));         
 });
 
 app.use(globalErrorHandler); 
-  
 const port = 8080;
 app.listen(port, ()=>{ console.log(`On PORT ${port} SERVER RUNNINGGGGG.....`) });
