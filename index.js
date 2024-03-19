@@ -15,6 +15,7 @@ const cors = require('cors');
 const AppError = require('./utils/AppError');
 require('./db/config');
  
+
 // MIDDLE-WARES 
 app.use(cors()); 
 app.use(express.json()); 
@@ -32,7 +33,6 @@ app.get('/', (req, res)=>{
         Status :200
     });   
 }); 
-
 
 const Pusher = require('pusher');
 const pusher = new Pusher({
