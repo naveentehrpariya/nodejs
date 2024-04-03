@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "live": "nodemon live.js"
   },
   "author": "",
   "license": "ISC",
@@ -18,6 +19,7 @@
     "ejs": "^3.1.8",
     "express": "^4.18.2",
     "express-async-handler": "^1.2.0",
+    "fluent-ffmpeg": "^2.1.2",
     "http-proxy-middleware": "^2.0.6",
     "joi": "^17.9.1",
     "jsonwebtoken": "^9.0.0",
